@@ -25,9 +25,13 @@ def deltaT(r=0, xi=0, beta=0, debug=False):
     assert xi >= -np.pi and xi <= np.pi, f'ERROR: xi = {xi} is outside of the range [-pi, pi]'
     assert beta >= -betaMax and beta <= betaMax, f'ERROR: beta = {beta} is outside of the range [-{betaMax}, {betaMax}]'
 
-    validOffsets = np.nonzero( (rmin(xi) + offsets - r) > 0 )[0]
-    if len(validOffsets) > 0:
-        offsetIdx = np.min(validOffsets)
+    validOffsets = r - (rmin(xi) + offsets)
+    validOffsetIdxs = np.nonzero( (r - (rmin(xi) + offsets)) > 0 )[0]
+    if debug:
+        print(f'DEBUG: offset comparisons {validOffsets}')
+        print(f'DEBUG: validOffsets = {validOffsetIdxs}')
+    if len(validOffsetIdxs) > 0:
+        offsetIdx = validOffsetIdxs[ np.argmin(validOffsets[validOffsetIdxs]) ]
         offset = lut[offsetIdx]['offs']
     else:
         return 0
