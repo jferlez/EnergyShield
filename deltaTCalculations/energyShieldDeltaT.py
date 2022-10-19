@@ -6,7 +6,7 @@ import math
 
 class energyShieldDeltaT:
 
-    def __init__(self,fileName):
+    def __init__(self,fileName,lutRange=None):
 
         with open(fileName,'rb') as fp:
             self.lut = pickle.load(fp)
@@ -19,6 +19,13 @@ class energyShieldDeltaT:
         for p in paramList:
             setattr(self, p, self.lut[0][p])
             assert all([self.lutObj[p] == getattr(self, p) for self.lutObj in self.lut]), f'ERROR: lut contains different values for problem parameter \'{p}\'...'
+        
+        if lutRange is not None:
+            assert type(lutRange) is tuple and len(lutRange) == 2 and type(lutRange[0]) is int and type(lutRange[1]) is int, 'ERROR: lutRange should be a length-2 tuple of integers'
+            assert lutRange[0] < lutRange[1] and lutRange[0] >= 0 and lutRange[1] <= len(self.lut), f'ERROR: lut range must specify an interval contained in (0,{len(self.lut)})'
+            self.lut = self.lut[lutRange[0]:lutRange[1]]
+            self.offsets = self.offsets[lutRange[0]:lutRange[1]]
+
 
     def rmin(self, xi):
         return self.rbar/(self.sigma*np.cos(xi/2) + 1 - self.sigma)
