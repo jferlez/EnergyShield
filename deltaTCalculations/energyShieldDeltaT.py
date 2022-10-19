@@ -53,4 +53,10 @@ class energyShieldDeltaT:
             print(f'DEBUG: xi={xi}; xi interval = [{xiLeftEndPt}, {min(xiLeftEndPt+xiIncrement, np.pi)}]')
             print(f'DEBUG: beta={beta}; beta interval = [{betaLeftEndPt}, {min(betaLeftEndPt+betaIncrement, self.betaMax)}]')
 
-        return self.lut[offsetIdx]['lut'][xiIndex, betaIndex]
+        lutDeltaT = self.lut[offsetIdx]['lut'][xiIndex, betaIndex]
+        vmaxDeltaT = (r - self.rmin(np.pi) - 2)/self.vmax
+
+        if offsetIdx == len(self.offsets) - 1 and vmaxDeltaT > lutDeltaT:
+            return vmaxDeltaT
+        else:
+            return lutDeltaT
