@@ -30,9 +30,10 @@ class energyShieldDeltaT:
     def rmin(self, xi):
         return self.rbar/(self.sigma*np.cos(xi/2) + 1 - self.sigma)
 
-    def deltaT(self, r=0, xi=0, beta=0, debug=False):
+    def deltaT(self, r=0, xi=0, beta=0, longDeltaTLimit=0., debug=False):
         assert xi >= -np.pi and xi <= np.pi, f'ERROR: xi = {xi} is outside of the range [-pi, pi]'
         assert beta >= -self.betaMax and beta <= self.betaMax, f'ERROR: beta = {beta} is outside of the range [-{self.betaMax}, {self.betaMax}]'
+        assert longDeltaTLimit >= 0., f'ERROR: argument longDeltaTLimit={longDeltaTLimit} should be >=0'
 
         validOffsets = r - (self.rmin(xi) + self.offsets)
         validOffsetIdxs = np.nonzero( (r - (self.rmin(xi) + self.offsets)) > 0 )[0]
@@ -61,7 +62,7 @@ class energyShieldDeltaT:
             print(f'DEBUG: beta={beta}; beta interval = [{betaLeftEndPt}, {min(betaLeftEndPt+betaIncrement, self.betaMax)}]')
 
         lutDeltaT = self.lut[offsetIdx]['lut'][xiIndex, betaIndex]
-        vmaxDeltaT = (r - self.rmin(np.pi) - 2)/self.vmax
+        vmaxDeltaT = min( (r - self.rmin(np.pi) - 2)/self.vmax, longDeltaTLimit )
 
         if offsetIdx == len(self.offsets) - 1 and vmaxDeltaT > lutDeltaT:
             return vmaxDeltaT
