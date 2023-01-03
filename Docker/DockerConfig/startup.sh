@@ -6,7 +6,7 @@ CORES=$4
 PORTNUM=$5
 CARLAPORT=$6
 MPIHOSTS=$7
-MPIARGS="$8"
+MPIARGS=$8
 /usr/sbin/sshd -D &> /root/sshd_log.out &
 
 if [ ! -d /home/$USER/.ssh ]

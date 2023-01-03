@@ -17,9 +17,9 @@ ATTACH=""
 HOSTS=""
 RESET=""
 MPIHOSTS="none"
-MPIARGS=""
-CORES=""
-REMOVE=""
+MPIARGS="none"
+CORES="1"
+REMOVE="no"
 SWAP=""
 CARLAPORT=2000
 for argwhole in "$@"; do
@@ -43,6 +43,10 @@ for argwhole in "$@"; do
         --start-carla) MPIARGS="--start-carla"
     esac
 done
+
+if [ $MPIARGS == "none" ]; then
+    MPIARGS=""
+fi
 
 re='^[0-9]+$'
 if ! [[ $PORT =~ $re ]] ; then
